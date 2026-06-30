@@ -65,6 +65,7 @@ $env:HF_TOKEN = "your_huggingface_token"
 macOS equivalent:
 
 ```bash
+export HF_TOKEN="your_huggingface_token"
 ```
 
 ## 2. Train the Model
