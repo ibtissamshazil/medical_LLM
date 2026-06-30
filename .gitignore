@@ -7,3 +7,4 @@ smolvlm_radiology/
 *.safetensors
 *.pt
 *.pth
+/.gradio
