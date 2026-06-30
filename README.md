@@ -9,9 +9,12 @@ This repository is a small medical vision-language project focused on radiology 
 ## Requirements
 
 - Windows PowerShell
+- macOS Terminal for setup/editing only
 - Python `3.10+`
 - NVIDIA GPU with CUDA-enabled PyTorch
 - Around `8 GB` VRAM for the default setup
+
+macOS note: this repository currently targets CUDA for training, terminal inference, and the local app. You can clone the repo and install dependencies on macOS, but `main.py`, `test.py`, and `app.py` are not expected to run natively on Mac without changing the code for CPU or a different accelerator.
 
 ## 1. Clone and Set Up
 
@@ -21,11 +24,24 @@ Clone the repo, then create a virtual environment outside the project folder if 
 python -m venv C:\Users\USER\.venv
 ```
 
+macOS equivalent:
+
+```bash
+python3 -m venv ~/venvs/medical_llm
+```
+
 Install dependencies with the same interpreter you will use to run the project:
 
 ```powershell
 C:\Users\USER\.venv\Scripts\python.exe -m pip install --upgrade pip
 C:\Users\USER\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+macOS equivalent:
+
+```bash
+~/venvs/medical_llm/bin/python -m pip install --upgrade pip
+~/venvs/medical_llm/bin/python -m pip install -r requirements.txt
 ```
 
 Quick check:
@@ -34,10 +50,21 @@ Quick check:
 C:\Users\USER\.venv\Scripts\python.exe -c "import gradio, torch; print('setup ok')"
 ```
 
+macOS equivalent:
+
+```bash
+~/venvs/medical_llm/bin/python -c "import gradio, torch; print('setup ok')"
+```
+
 Optional: set a Hugging Face token for higher rate limits or model upload:
 
 ```powershell
 $env:HF_TOKEN = "your_huggingface_token"
+```
+
+macOS equivalent:
+
+```bash
 ```
 
 ## 2. Train the Model
