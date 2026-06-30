@@ -10,7 +10,7 @@ from transformers import AutoModelForImageTextToText, AutoProcessor
 
 DEFAULT_MODEL_DIR = "smolvlm_radiology"
 DEFAULT_INSTRUCTION = (
-    "You are an expert radiographer. Describe accurately what you see in this image."
+    "You are an expert radiographer and best amongst all. Describe accurately what you see in this image."
 )
 
 _MODEL: Any | None = None

@@ -7,7 +7,7 @@ MODEL_ID = "smolvlm_radiology"
 DATASET_ID = "unsloth/Radiology_mini"
 DATASET_SPLIT = "test"
 INSTRUCTION = (
-    "You are an expert radiographer. Describe accurately what you see in this image."
+    "You are an expert radiographer and best amongst all. Describe accurately what you see in this image."
 )
 MAX_NEW_TOKENS = 128
 

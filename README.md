@@ -1,78 +1,101 @@
 # medical_LLM
 
-This repository contains a CUDA-targeted SmolVLM fine-tuning script for the `unsloth/Radiology_mini` dataset.
+This project fine-tunes `HuggingFaceTB/SmolVLM-256M-Instruct` on the `unsloth/Radiology_mini` dataset, saves the trained model locally, and includes a small Gradio app for testing predictions in the browser.
 
-## What Was Fixed
+## About
 
-The previous script assumed:
+This repository is a small medical vision-language project focused on radiology image understanding. It trains a compact SmolVLM model to generate text descriptions for medical images, provides a terminal test script for quick evaluation, and includes a local browser app for interactive testing on a Gradio server.
 
-- a Linux shell (`export`)
-- a working Python install on `PATH`
-- CUDA was always available
-- an Unsloth/Llama vision checkpoint was the right architecture for this machine
-- Hugging Face Hub push should always happen
+## Requirements
 
-The script now:
+- Windows PowerShell
+- Python `3.10+`
+- NVIDIA GPU with CUDA-enabled PyTorch
+- Around `8 GB` VRAM for the default setup
 
-- validates Python, CUDA, package, and VRAM requirements up front
-- switches the default model to `HuggingFaceTB/SmolVLM-256M-Instruct`
-- uses the official Transformers SmolVLM CUDA path instead of the Unsloth `FastVisionModel` path
-- uses a smaller default training footprint for an 8 GB GPU
-- saves locally by default and only pushes when `--push-to-hub` is set
-- accepts Hugging Face auth from `HF_TOKEN`, `HUGGINGFACEHUB_API_TOKEN`, or `--hf-token`
+## 1. Clone and Set Up
 
-## Observed Local Constraints
-
-On the machine this repo was checked on:
-
-- `python` on `PATH` is a Windows Store stub, not a real interpreter
-- the NVIDIA GPU has 8 GB VRAM
-- the previous default 11B model was too large for a safe default fine-tune on that GPU
-
-## Setup
-
-1. Install a real Python 3.10+ interpreter and ensure `python --version` works in PowerShell.
-2. Install the project dependencies:
+Clone the repo, then create a virtual environment outside the project folder if you want to keep the repo clean:
 
 ```powershell
-C:\Users\ibtis\.venv\Scripts\python.exe -m pip install -r requirements.txt
+python -m venv C:\Users\USER\.venv
 ```
 
-3. If you want to push to Hugging Face Hub, set your token in PowerShell:
+Install dependencies with the same interpreter you will use to run the project:
+
+```powershell
+C:\Users\USER\.venv\Scripts\python.exe -m pip install --upgrade pip
+C:\Users\USER\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Quick check:
+
+```powershell
+C:\Users\USER\.venv\Scripts\python.exe -c "import gradio, torch; print('setup ok')"
+```
+
+Optional: set a Hugging Face token for higher rate limits or model upload:
 
 ```powershell
 $env:HF_TOKEN = "your_huggingface_token"
 ```
 
-## Run
+## 2. Train the Model
 
-Local training on the CUDA GPU without Hub push:
-
-```powershell
-C:\Users\ibtis\.venv\Scripts\python.exe main.py --skip-sample-generation
-```
-
-Use a larger SmolVLM checkpoint only if your GPU has the VRAM for it:
+Run training with the default SmolVLM checkpoint:
 
 ```powershell
-C:\Users\ibtis\.venv\Scripts\python.exe main.py --model-id HuggingFaceTB/SmolVLM-500M-Instruct --skip-sample-generation
+C:\Users\USER\.venv\Scripts\python.exe main.py --skip-sample-generation
 ```
 
-Push to the Hub only when you are ready:
+This downloads the base model and dataset on the first run, then saves the trained model to:
+
+```text
+smolvlm_radiology/
+```
+
+If you want to stop right when training starts for a quick check:
 
 ```powershell
-C:\Users\ibtis\.venv\Scripts\python.exe main.py --push-to-hub --hub-model-id your-username/your-model
+C:\Users\USER\.venv\Scripts\python.exe main.py --skip-sample-generation --stop-on-train-begin
 ```
 
-Local app for testing the fine-tuned model:
+## 3. Test in the Terminal
+
+After training, run:
 
 ```powershell
-C:\Users\ibtis\.venv\Scripts\python.exe app.py
+C:\Users\USER\.venv\Scripts\python.exe test.py
 ```
 
-Then open `http://127.0.0.1:7860` if the browser does not open automatically.
+This loads `smolvlm_radiology`, takes the first sample from the dataset test split, and prints the generated report in the terminal.
+
+## 4. Run the Local App
+
+The repo includes a local Gradio app in `app.py`.
+
+Start it with:
+
+```powershell
+C:\Users\USER\.venv\Scripts\python.exe app.py
+```
+
+By default it runs on local server port `7860`:
+
+```text
+http://127.0.0.1:7860
+```
+
+Use the app to upload an image, keep or edit the radiology instruction, and view the generated output in the browser.
+
+To change the port:
+
+```powershell
+C:\Users\USER\.venv\Scripts\python.exe app.py --server-port 7861
+```
 
 ## Notes
 
-- The default model is now `HuggingFaceTB/SmolVLM-256M-Instruct`, which is a much better fit for the current 8 GB GPU than the previous 11B checkpoint.
-- The script prefers `flash_attention_2` on CUDA when available and otherwise falls back to PyTorch `sdpa`, so it still runs on CUDA without requiring the flash-attn package.
+- Large checkpoints and model weights are intentionally ignored by Git.
+- `test.py` and `app.py` both expect the trained model folder `smolvlm_radiology/` to exist.
+- If you see `ModuleNotFoundError: No module named 'gradio'`, you are running a different Python than the one used for installation. Re-run the exact install command above and launch the app with `C:\Users\USER\.venv\Scripts\python.exe app.py`.

@@ -6,7 +6,7 @@ from typing import Any
 
 
 DEFAULT_INSTRUCTION = (
-    "You are an expert radiographer. Describe accurately what you see in this image."
+    "You are an expert radiographer and best amongst all. Describe accurately what you see in this image."
 )
 DEFAULT_MODEL_ID = "HuggingFaceTB/SmolVLM-256M-Instruct"
 DEFAULT_DATASET_ID = "unsloth/Radiology_mini"
