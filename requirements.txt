@@ -1,0 +1,6 @@
+accelerate
+datasets
+gradio
+pillow
+torch
+transformers

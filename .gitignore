@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+app.stdout.log
+app.stderr.log
+outputs/
+smolvlm_radiology/
+*.safetensors
+*.pt
+*.pth
